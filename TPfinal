@@ -1,3 +1,28 @@
+	.macro read_int #read int del usuario 
+		li $v0,5        #read, almacenar en v0
+		syscall
+		.end_macro
+
+		.macro print_label (%label) #print string en consola
+		la $a0, %label 
+		li $v0, 4
+		syscall
+		.end_macro
+
+		.macro done #finalizar el programa
+		li $v0,10
+		syscall
+		.end_macro	
+
+		.macro print_error (%errno) #print msg error + codigo
+		print_label(error)
+		li $a0, %errno
+		li $v0, 1
+		syscall
+		print_label(return)
+		.end_macro
+
+
 .data
 slist:	.word 0
 cclist: .word 0
@@ -22,7 +47,7 @@ selCat:		.asciiz "\nSe ha seleccionado la categoria: "
 idObj:		.asciiz "\nIngrese el ID del objeto a eliminar:  "
 objName:	.asciiz "\nIngrese el nombre de un objeto: "
 success:	.asciiz "La operacion se realizo con exito\n\n"
-
+failure:	.asciiz "La operacion NO se pudo realizar."
 
 
 		.text

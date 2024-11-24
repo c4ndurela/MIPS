@@ -78,3 +78,29 @@ newcategory_end:
 	addiu $sp, $sp, 4
 	jr $ra
 
+# NEXT CAATEGORY FUNCTION
+
+nextcategory:
+    lw $t0, wclist 
+    beqz $t0, err201 	# no categories print error 201
+    
+    lw $t1, wclist 	 # wwclist copy for compare
+    lw $t0, 12($t0)
+     
+    beq $t0, $t1, err202 	# one category print error 202
+    sw $t0, wclist 	        # save wclist from register
+    lw $t0, 8($t0) 
+    print_label(selCat)
+    la $a0, 0($t0) 	      #print selected category
+    li $v0, 4 	
+    syscall 
+    jr $ra
+		
+err201:
+	print_error(201)
+	jr $ra
+
+err202:
+	print_error(202)
+	jr $ra
+

@@ -22,3 +22,37 @@ selCat:		.asciiz "\nSe ha seleccionado la categoria: "
 idObj:		.asciiz "\nIngrese el ID del objeto a eliminar:  "
 objName:	.asciiz "\nIngrese el nombre de un objeto: "
 success:	.asciiz "La operacion se realizo con exito\n\n"
+
+
+
+		.text
+main:
+	# initialization scheduler vector
+	la $t0, schedv
+	la $t1, newcaterogy
+	sw $t1, 0($t0)
+	la $t1, nextcategory
+	sw $t1, 4($t0)
+	la $t1, prevcategory
+	sw $t1, 8($t0)
+	la $t1, listcategories
+	sw $t1, 12($t0)
+	la $t1, delcategory
+	sw $t1, 16($t0)
+	la $t1, newobject
+	sw $t1, 20($t0)
+	la $t1, listobjects
+	sw $t1, 24($t0)
+	la $t1, delobject
+	sw $t1, 28($t0)
+main_loop:
+	# show menu
+	jal menu_display
+	beqz $v0, main_end
+	addi $v0, $v0, -1		# dec menu option
+	sll $v0, $v0, 2                 # multiply menu option by 4
+	la $t0, schedv
+	add $t0, $t0, $v0
+	lw $t1, ($t0)
+  	la $ra, main_ret 		# save return address
+  	jr $t1		         	# call menu subrutine

@@ -127,4 +127,50 @@ prevcategory:
 
 # DELETE CATEGORIES FUNCTION  - ver
 
+# NEW OBJECT FUNCTION -corregir
+
+newobject:
+	lw $t0, wclist
+	beqz $t0, err501    # no categories print error 401
+	addiu $sp, $sp, -4
+	sw $ra, 4($sp)
+	
+	la $a0, objName
+	jal getblock		# get memory block
+	
+	move $a2, $v0
+	lw $a0, wclist
+	la $a0, 4($a0)
+	lw $t0, 0($a0)
+	beqz $t0, create_list		# if no objects create new list
+	lw $t0, 0($t0)
+	lw $t0, 4($t0)
+	addi $a1, $t0, 1		# increments the old ID 
+	
+create_node:
+	jal addnode	# add node subrutine
+	lw $t0, wclist
+	la $t0, 4($t0)
+	beqz $t0, first_object		# first object link to the first pointer
+	
+newobject_end:
+	li $v0, 0			# return success
+	lw $ra, 4($sp)
+	addiu $sp, $sp, 4
+	jr $ra
+
+create_list:
+	li $a1, 1		# initialize ID
+	j create_node
+	
+first_object:
+	sw $v0, 0($t0)		#store $v0 in $t0's start 
+	j newobject_end
+	
+
+err501:
+print_error(501)
+j newobject_end
+
+
 

@@ -104,3 +104,27 @@ err202:
 	print_error(202)
 	jr $ra
 
+# PREVIOUS CATEGORY FUNCTION
+
+prevcategory:
+	lw $t0, wclist 
+	beqz $t0, err201 	# no categories print error 201
+	
+  	lw $t1, wclist 	        # wclist copy for compare
+  	lw $t0, 0($t0) 
+  	
+        beq $t0, $t1, err202 	# one category print error 202
+        sw $t0, wclist 	
+        lw $t0, 8($t0)
+        print_label(selCat)
+        la $a0, 0($t0)  	#print selected category
+        li $v0, 4 	
+        syscall 
+        jr $ra
+
+
+# LIST CATEGORIES FUNCTION - ver
+
+# DELETE CATEGORIES FUNCTION  - ver
+
+

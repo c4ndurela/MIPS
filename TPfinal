@@ -56,3 +56,25 @@ main_loop:
 	lw $t1, ($t0)
   	la $ra, main_ret 		# save return address
   	jr $t1		         	# call menu subrutine
+
+# NEW CATEGORY FUNCTION 
+
+newcaterogy:
+	addiu $sp, $sp, -4
+	sw $ra, 4($sp)
+	la $a0, catName		# input category name
+	jal getblock
+	move $a2, $v0		# $a2 = *char to cateogry name
+	la $a0, cclist		# $a0 = list
+	li $a1, 0		# $a1 = NULL
+	jal addnode
+	lw $t0, wclist
+	bnez $t0, newcategory_end
+	sw $v0, wclist		# update working list if was NULL
+newcategory_end:
+	print_label(success)
+	li $v0, 0		# return success
+	lw $ra, 4($sp)
+	addiu $sp, $sp, 4
+	jr $ra
+

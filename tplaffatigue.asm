@@ -58,10 +58,10 @@ main:
 	sw $t1, 4($t0)
 	la $t1, prevcategory
 	sw $t1, 8($t0)
-	la $t1, listcategories
-	sw $t1, 12($t0)
-	la $t1, delcategory
-	sw $t1, 16($t0)
+	#la $t1, listcategories
+	#sw $t1, 12($t0)
+	#la $t1, delcategory
+	#sw $t1, 16($t0)
 	la $t1, newobject
 	sw $t1, 20($t0)
 	la $t1, listobjects
@@ -80,7 +80,25 @@ main_loop:
   	la $ra, main_ret 		# save return address
   	jr $t1		         	# call menu subrutine
 
+main_ret:
+    j main_loop		
+main_end:
+	print_label(thanks)
+	done
 
+menu_display:
+	print_label(menu)
+	read_int
+	# test if invalid option go to L1
+	bgt $v0, 8, menu_display_L1
+	bltz $v0, menu_display_L1
+	# else return
+	jr $ra
+	# print error 101 and try again
+menu_display_L1:
+	print_error(101)
+	j menu_display
+	
 	
 # NEW CATEGORY FUNCTION 
 
@@ -150,7 +168,33 @@ prevcategory:
 
 
 # LIST CATEGORIES FUNCTION - ver
-
+listcategories:	
+	lw $t0, wclist
+	beqz $t0, err301	# no categories print error 301
+	
+	lw $t1, cclist		
+	lw $t2, cclist		#first category
+	j loop_list		
+loop_list:
+	bne $t1, $t0, print_cat	# continue loop if (wclist != $t1)
+	la $a0, selected		
+	li $v0, 4			# print ">" in selected category
+	syscall
+	
+print_cat:	
+	lw $a0, 8($t1)
+	li $v0, 4 			# print category name
+	syscall
+	lw $t1,12($t1)      	# next node
+	beq $t1, $t2, endloop_cat		# end verification ( $t1 == cclist)
+	j loop_list
+        
+endloop_cat:
+	jr $ra
+	    
+err301:
+	print_error(301)
+	jr $ra
 # DELETE CATEGORIES FUNCTION  - ver
 
 # NEW OBJECT FUNCTION -corregir
